@@ -18,7 +18,7 @@ export function DashboardShell({ children, user }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-background">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} user={displayUser} />
       <div className="flex min-h-screen flex-col lg:pl-[260px]">
         <TopNavbar onMenuClick={() => setSidebarOpen(true)} user={displayUser} />

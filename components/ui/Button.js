@@ -4,14 +4,15 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-ocean-700 text-white shadow-md hover:bg-ocean-800 hover:shadow-lg focus-visible:ring-ocean-500",
+    "bg-brand-700 text-white shadow-md hover:bg-brand-800 hover:shadow-lg focus-visible:ring-brand-500 dark:bg-brand-600 dark:hover:bg-brand-500",
   secondary:
-    "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 focus-visible:ring-ocean-500",
+    "border border-border bg-card text-foreground hover:bg-muted focus-visible:ring-brand-500",
   outline:
-    "border-2 border-ocean-700 bg-transparent text-ocean-800 hover:bg-ocean-50 focus-visible:ring-ocean-500",
-  ghost: "bg-transparent text-ocean-800 hover:bg-ocean-50",
+    "border-2 border-brand-700 bg-transparent text-brand-800 hover:bg-brand-500/10 focus-visible:ring-brand-500 dark:border-brand-500 dark:text-brand-300 dark:hover:bg-brand-500/15",
+  ghost:
+    "bg-transparent text-brand-800 hover:bg-muted focus-visible:ring-brand-500 dark:text-brand-300",
   luxury:
-    "bg-gradient-to-r from-luxury-gold/90 to-luxury-gold text-luxury-midnight font-semibold hover:opacity-90",
+    "bg-gradient-to-r from-luxury-gold/90 to-luxury-gold font-semibold text-luxury-midnight hover:opacity-90",
 };
 
 const sizes = {
@@ -31,7 +32,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
         variants[variant],
         sizes[size],
         className

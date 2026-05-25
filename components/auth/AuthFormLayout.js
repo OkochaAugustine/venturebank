@@ -47,27 +47,27 @@ export function AuthFormLayout({ title, subtitle, children, footer }) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center bg-white px-4 py-10 sm:px-8 lg:px-14 lg:py-16 xl:px-20">
+      <div className="flex flex-1 flex-col justify-center bg-background px-4 py-10 sm:px-8 lg:px-14 lg:py-16 xl:px-20">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
           className="mx-auto w-full max-w-lg"
         >
-          <p className="text-xs font-bold uppercase tracking-widest text-ocean-600">
+          <p className="text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400">
             {siteConfig.name}
           </p>
-          <h1 className="mt-3 font-serif text-3xl font-semibold text-ocean-950 sm:text-[2rem]">
+          <h1 className="mt-3 font-serif text-3xl font-semibold text-foreground sm:text-[2rem]">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-2 text-base text-slate-600">{subtitle}</p>
+            <p className="mt-2 text-base text-muted-foreground">{subtitle}</p>
           )}
-          <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
+          <div className="surface-card mt-8 p-6 sm:p-8">
             {children}
           </div>
           {footer && (
-            <p className="mt-6 text-center text-sm text-slate-600">{footer}</p>
+            <p className="mt-6 text-center text-sm text-muted-foreground">{footer}</p>
           )}
         </motion.div>
       </div>

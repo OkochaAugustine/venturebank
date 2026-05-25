@@ -3,19 +3,25 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { siteConfig } from "@/config/site";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { TranslateWidget } from "@/components/layout/TranslateWidget";
 
 export function AdminAuthShell({ title, subtitle, children, footer }) {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <header className="border-b border-slate-200/80 bg-white/80 px-4 py-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80 sm:px-6">
+    <div className="surface-page flex min-h-screen flex-col bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <header className="flex items-center justify-between border-b border-border bg-card/80 px-4 py-4 backdrop-blur sm:px-6">
         <Link href="/" className="inline-flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
             V
           </span>
-          <span className="font-serif text-lg font-semibold text-slate-900 dark:text-white">
+          <span className="font-serif text-lg font-semibold text-foreground">
             {siteConfig.name}
           </span>
         </Link>
+        <div className="flex items-center gap-2">
+          <TranslateWidget compact />
+          <ThemeToggle compact />
+        </div>
       </header>
 
       <main className="flex flex-1 items-center justify-center p-4 sm:p-6">
@@ -31,7 +37,7 @@ export function AdminAuthShell({ title, subtitle, children, footer }) {
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
             )}
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg dark:border-slate-700 dark:bg-slate-800 sm:p-8">
+          <div className="surface-card p-5 shadow-lg sm:p-8">
             {children}
           </div>
           {footer && <div className="mt-6 text-center text-sm text-slate-500">{footer}</div>}

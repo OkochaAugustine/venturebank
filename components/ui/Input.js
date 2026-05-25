@@ -3,9 +3,9 @@
 import { cn } from "@/lib/utils";
 
 const inputStyles =
-  "flex h-12 w-full rounded-lg border border-slate-200 bg-white px-4 text-[15px] text-slate-900 shadow-sm transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500";
+  "flex h-12 w-full rounded-lg border border-border bg-card px-4 text-[15px] text-foreground shadow-sm transition-all placeholder:text-muted-foreground hover:border-brand-500/30 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground dark:focus:ring-brand-400/25";
 
-const labelStyles = "text-sm font-semibold text-slate-700";
+const labelStyles = "text-sm font-semibold text-foreground";
 
 export function Input({ className, label, error, id, ...props }) {
   const inputId = id || props.name;
@@ -26,7 +26,7 @@ export function Input({ className, label, error, id, ...props }) {
         )}
         {...props}
       />
-      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+      {error && <p className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
@@ -53,7 +53,7 @@ export function Select({ className, label, error, id, children, ...props }) {
       >
         {children}
       </select>
-      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+      {error && <p className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
@@ -69,10 +69,10 @@ export function Checkbox({ className, label, id, ...props }) {
       <input
         id={checkboxId}
         type="checkbox"
-        className="mt-1 h-4 w-4 rounded border-slate-300 text-ocean-600 focus:ring-ocean-500/30"
+        className="mt-1 h-4 w-4 rounded border-border text-brand-600 focus:ring-brand-500/30 dark:bg-card"
         {...props}
       />
-      <span className="text-sm leading-relaxed text-slate-600">{label}</span>
+      <span className="text-sm leading-relaxed text-muted-foreground">{label}</span>
     </label>
   );
 }

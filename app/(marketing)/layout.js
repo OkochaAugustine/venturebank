@@ -3,9 +3,9 @@ import { MarketingFooter } from "@/components/layout/MarketingFooter";
 
 export default function MarketingLayout({ children }) {
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-800 antialiased">
+    <div className="surface-page flex min-h-screen flex-col font-sans antialiased">
       <MarketingNavbar />
-      {children}
+      <div className="marketing-fill flex-1">{children}</div>
       <MarketingFooter />
     </div>
   );

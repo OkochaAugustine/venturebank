@@ -8,7 +8,7 @@ import { staggerContainer, staggerItem, viewportOnce } from "./motion";
 
 export function TrustStats() {
   return (
-    <section className="relative bg-white">
+    <section className="section-light relative">
       <div className="relative h-48 overflow-hidden sm:h-56 lg:h-64">
         <MediaImage
           src={images.trustBanner.src}
@@ -61,7 +61,7 @@ export function TrustStats() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="grid w-full grid-cols-1 gap-4 border-t border-slate-100 pb-12 sm:grid-cols-3 sm:gap-5 sm:pb-20 lg:pb-24"
+          className="grid w-full grid-cols-1 gap-4 border-t border-border pb-12 sm:grid-cols-3 sm:gap-5 sm:pb-20 lg:pb-24"
         >
           {infoCards.map((card) => (
             <motion.div
@@ -69,7 +69,7 @@ export function TrustStats() {
               variants={staggerItem}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.3 }}
-              className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 p-6 text-center shadow-sm transition-shadow hover:shadow-lg sm:p-8"
+              className="surface-card w-full p-6 text-center transition-shadow hover:shadow-lg sm:p-8"
             >
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-ocean-600">
                 {card.title}

@@ -1,57 +1,70 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { HiOutlineMoon, HiOutlineSun, HiOutlineShieldCheck } from "react-icons/hi2";
-import { Button } from "@/components/ui/Button";
+import { useEffect, useState } from "react";
+import { HiOutlineMoon, HiOutlineSun, HiOutlineComputerDesktop } from "react-icons/hi2";
 import { PinResetSection } from "@/components/dashboard/PinResetSection";
+import { cn } from "@/lib/utils";
+
+const themeOptions = [
+  { value: "light", label: "Light", icon: HiOutlineSun },
+  { value: "dark", label: "Dark", icon: HiOutlineMoon },
+  { value: "system", label: "System", icon: HiOutlineComputerDesktop },
+];
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   return (
-    <div className="w-full max-w-3xl space-y-6">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <h1 className="text-2xl font-semibold text-ocean-950 dark:text-white">Settings</h1>
-        <p className="mt-1 text-sm text-slate-500">Appearance, PIN, and security preferences</p>
+    <div className="dashboard-page w-full max-w-3xl space-y-6">
+      <div className="surface-card p-5 sm:p-6">
+        <h1 className="text-2xl font-semibold text-foreground">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Appearance, PIN, and security preferences
+        </p>
       </div>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <h2 className="font-semibold text-ocean-950 dark:text-white">Appearance</h2>
-        <p className="mt-1 text-sm text-slate-500">Light or dark mode for online banking</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Button
-            variant={theme === "light" ? "primary" : "outline"}
-            onClick={() => setTheme("light")}
-          >
-            <HiOutlineSun className="mr-2 h-4 w-4" />
-            Light
-          </Button>
-          <Button
-            variant={theme === "dark" ? "primary" : "outline"}
-            onClick={() => setTheme("dark")}
-          >
-            <HiOutlineMoon className="mr-2 h-4 w-4" />
-            Dark
-          </Button>
-        </div>
+      <section className="surface-card p-5 sm:p-6">
+        <h2 className="font-semibold text-foreground">Appearance</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Theme is saved automatically and applies across all pages
+        </p>
+        {mounted && (
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            {themeOptions.map(({ value, label, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setTheme(value)}
+                className={cn(
+                  "flex flex-col items-center gap-2 rounded-xl border p-4 transition-all",
+                  theme === value
+                    ? "border-brand-500 bg-brand-500/10 text-brand-700 dark:text-brand-300"
+                    : "border-border bg-muted/50 text-muted-foreground hover:border-brand-500/40"
+                )}
+              >
+                <Icon className="h-6 w-6" />
+                <span className="text-sm font-semibold">{label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <div className="flex items-center gap-3">
-          <HiOutlineShieldCheck className="h-6 w-6 text-blue-600" />
-          <div>
-            <h2 className="font-semibold text-ocean-950 dark:text-white">PIN recovery & reset</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Change your banking PIN using your account password and current PIN.
-            </p>
-          </div>
-        </div>
+      <section className="surface-card p-5 sm:p-6">
+        <h2 className="font-semibold text-foreground">PIN recovery & reset</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Change your banking PIN using your account password and current PIN.
+        </p>
         <PinResetSection />
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <h2 className="font-semibold text-ocean-950 dark:text-white">Session security</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+      <section className="surface-card p-5 sm:p-6">
+        <h2 className="font-semibold text-foreground">Session security</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
           Sessions use HTTP-only cookies and JWT. PIN verification is required on every login.
         </p>
       </section>

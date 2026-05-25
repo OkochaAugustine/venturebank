@@ -2,14 +2,14 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export function ThemeProvider({ children, ...props }) {
+export function ThemeProvider({ children }) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme="system"
       enableSystem
+      storageKey="venturebank-theme"
       disableTransitionOnChange={false}
-      {...props}
     >
       {children}
     </NextThemesProvider>
