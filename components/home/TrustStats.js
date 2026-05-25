@@ -38,7 +38,7 @@ export function TrustStats() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="grid grid-cols-2 gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-20"
+          className="grid w-full grid-cols-2 gap-4 py-10 sm:gap-8 sm:py-14 lg:gap-16 lg:py-20"
         >
           {trustStats.map((stat) => (
             <motion.div
@@ -61,7 +61,7 @@ export function TrustStats() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="grid gap-5 border-t border-slate-100 pb-20 sm:grid-cols-3 sm:gap-6 lg:pb-24"
+          className="grid w-full grid-cols-1 gap-4 border-t border-slate-100 pb-12 sm:grid-cols-3 sm:gap-5 sm:pb-20 lg:pb-24"
         >
           {infoCards.map((card) => (
             <motion.div
@@ -69,7 +69,7 @@ export function TrustStats() {
               variants={staggerItem}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.3 }}
-              className="rounded-2xl border border-slate-100 bg-slate-50/50 p-8 text-center shadow-sm transition-shadow hover:shadow-lg"
+              className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 p-6 text-center shadow-sm transition-shadow hover:shadow-lg sm:p-8"
             >
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-ocean-600">
                 {card.title}

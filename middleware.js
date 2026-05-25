@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { AUTH_COOKIE } from "@/lib/auth-cookies";
+import { AUTH_COOKIE, PIN_COOKIE } from "@/lib/auth-cookies";
 import { getJwtSecretOrPlaceholder } from "@/lib/env";
 
-const protectedPaths = ["/dashboard", "/admin"];
 const memberAuthPaths = ["/login", "/register"];
 const adminAuthPaths = ["/admin/login", "/admin/register"];
+const pinPaths = ["/setup-pin", "/verify-pin"];
 
 function getSecret() {
   return new TextEncoder().encode(getJwtSecretOrPlaceholder());
@@ -20,10 +20,19 @@ async function verifyAuthToken(token) {
   }
 }
 
+function memberPostAuthRedirect(session, pinVerified, callbackUrl) {
+  if (session.role === "admin") return "/admin";
+  if (!session.pinSet) return "/setup-pin";
+  if (!pinVerified) return "/verify-pin";
+  if (callbackUrl?.startsWith("/dashboard")) return callbackUrl;
+  return "/dashboard";
+}
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(AUTH_COOKIE)?.value;
   const session = token ? await verifyAuthToken(token) : null;
+  const pinVerified = Boolean(request.cookies.get(PIN_COOKIE)?.value);
 
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
   const isAdminAuthPage = adminAuthPaths.some((p) => pathname === p);
@@ -32,6 +41,7 @@ export async function middleware(request) {
   const isDashboardRoute =
     pathname === "/dashboard" || pathname.startsWith("/dashboard/");
   const isMemberAuthPage = memberAuthPaths.some((p) => pathname === p);
+  const isPinPage = pinPaths.some((p) => pathname === p);
 
   if (isAdminProtected && !session) {
     const url = new URL("/admin/login", request.url);
@@ -45,6 +55,12 @@ export async function middleware(request) {
     return NextResponse.redirect(url);
   }
 
+  if (isPinPage && !session) {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
+  }
+
   if (isAdminProtected && session && session.role !== "admin") {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
@@ -53,12 +69,44 @@ export async function middleware(request) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
+  if (isDashboardRoute && session && session.role !== "admin") {
+    if (!session.pinSet) {
+      return NextResponse.redirect(new URL("/setup-pin", request.url));
+    }
+    if (!pinVerified) {
+      return NextResponse.redirect(new URL("/verify-pin", request.url));
+    }
+  }
+
+  if (isPinPage && session?.role === "admin") {
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
+
+  if (pathname === "/setup-pin" && session) {
+    if (session.pinSet && pinVerified) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    if (session.pinSet && !pinVerified) {
+      return NextResponse.redirect(new URL("/verify-pin", request.url));
+    }
+  }
+
+  if (pathname === "/verify-pin" && session) {
+    if (!session.pinSet) {
+      return NextResponse.redirect(new URL("/setup-pin", request.url));
+    }
+    if (pinVerified) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
+
   if (isAdminAuthPage && session?.role === "admin") {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   if (isMemberAuthPage && session) {
-    const dest = session.role === "admin" ? "/admin" : "/dashboard";
+    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl");
+    const dest = memberPostAuthRedirect(session, pinVerified, callbackUrl);
     return NextResponse.redirect(new URL(dest, request.url));
   }
 
@@ -73,5 +121,7 @@ export const config = {
     "/register",
     "/admin/login",
     "/admin/register",
+    "/setup-pin",
+    "/verify-pin",
   ],
 };

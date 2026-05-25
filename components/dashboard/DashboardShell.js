@@ -22,7 +22,7 @@ export function DashboardShell({ children, user }) {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} user={displayUser} />
       <div className="flex min-h-screen flex-col lg:pl-[260px]">
         <TopNavbar onMenuClick={() => setSidebarOpen(true)} user={displayUser} />
-        <main className="mx-auto w-full max-w-[1400px] flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="dashboard-page mx-auto w-full max-w-[1400px] flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

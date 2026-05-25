@@ -19,6 +19,7 @@ export function BankingCard({
   fiatBalance = 0,
   accountNumber,
   accountLabel = "Primary Checking",
+  className,
 }) {
   const [hidden, setHidden] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
@@ -35,11 +36,11 @@ export function BankingCard({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-[400px] sm:mx-auto lg:max-w-[380px]"
+      className={cn("w-full max-w-[400px] sm:mx-auto lg:max-w-[380px]", className)}
     >
       <div
         className={cn(
-          "relative aspect-[1.586/1] w-full overflow-hidden rounded-2xl p-5 shadow-xl sm:p-6",
+          "relative aspect-[1.72/1] w-full overflow-hidden rounded-2xl p-4 shadow-xl sm:aspect-[1.586/1] sm:p-6",
           "bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-950",
           "ring-1 ring-white/10"
         )}

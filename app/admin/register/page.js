@@ -35,7 +35,11 @@ export default function AdminRegisterPage() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error || data.message);
+      if (data.message) {
+        setError("");
+        alert(data.message);
+      }
       router.push("/admin");
       router.refresh();
     } catch (err) {

@@ -36,12 +36,16 @@ export function LoginForm() {
         return;
       }
 
-      const dest =
-        data.user?.role === "admin"
-          ? "/admin"
-          : callbackUrl.startsWith("/admin")
-            ? "/dashboard"
-            : callbackUrl;
+      let dest = "/dashboard";
+      if (data.user?.role === "admin") {
+        dest = "/admin";
+      } else if (data.requiresPinSetup) {
+        dest = "/setup-pin";
+      } else if (data.requiresPinVerify) {
+        dest = "/verify-pin";
+      } else if (callbackUrl && !callbackUrl.startsWith("/admin")) {
+        dest = callbackUrl;
+      }
       router.push(dest);
       router.refresh();
     } catch {

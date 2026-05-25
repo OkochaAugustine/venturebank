@@ -31,14 +31,16 @@ function StatCard({ icon: Icon, label, value, sub, color }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90"
+      className="flex min-h-[108px] w-full flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-700/80 dark:bg-slate-800/90 sm:min-h-[120px] sm:p-5"
     >
-      <div className={cn("mb-3 flex h-10 w-10 items-center justify-center rounded-xl", colors[color])}>
+      <div className={cn("mb-2 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10 sm:rounded-xl", colors[color])}>
         <Icon className="h-5 w-5" />
       </div>
-      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-1 text-lg font-bold text-slate-900 dark:text-white sm:text-xl">{value}</p>
-      <p className="text-[11px] text-slate-400">{sub}</p>
+      <div>
+        <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 sm:text-xs">{label}</p>
+        <p className="mt-0.5 text-base font-bold tabular-nums text-slate-900 dark:text-white sm:text-lg">{value}</p>
+        <p className="text-[10px] text-slate-400">{sub}</p>
+      </div>
     </motion.div>
   );
 }
@@ -47,7 +49,7 @@ function Panel({ title, action, children, className }) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90",
+        "w-full rounded-xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 sm:p-5",
         className
       )}
     >
@@ -74,150 +76,163 @@ export function OceanDashboard({ userName }) {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="space-y-4">
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-700" />
+        <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-700" />
+            <div key={i} className="h-28 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-700" />
           ))}
         </div>
-        <div className="mx-auto h-52 max-w-[420px] animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-700" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="w-full space-y-4 pb-6 sm:space-y-6 sm:pb-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
           Dashboard
         </h1>
         <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Welcome back, {firstName}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={HiOutlineWallet}
-          label="Account Limit"
-          value={formatCurrency(stats?.accountLimit ?? 500000)}
-          sub="Available"
-          color="blue"
-        />
-        <StatCard
-          icon={HiOutlineArrowDownTray}
-          label="Monthly Deposits"
-          value={formatCurrency(stats?.monthlyDeposits ?? 0)}
-          sub="This month"
-          color="green"
-        />
-        <StatCard
-          icon={HiOutlineArrowUpTray}
-          label="Monthly Expenses"
-          value={formatCurrency(stats?.monthlyExpenses ?? 0)}
-          sub="This month"
-          color="red"
-        />
-        <StatCard
-          icon={HiOutlineChartBar}
-          label="Total Volume"
-          value={formatCurrency(stats?.totalVolume ?? 0)}
-          sub="All time activity"
-          color="purple"
-        />
-      </div>
-
-      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(280px,400px)_1fr] lg:items-start">
-        <div className="w-full shrink-0 lg:sticky lg:top-24">
+      <div className="flex w-full flex-col gap-4 lg:gap-6">
+        <div className="w-full lg:hidden">
           <BankingCard
             holderName={fullName.toUpperCase()}
             fiatBalance={total}
             accountNumber={primary?.accountNumber}
             accountLabel={primary?.name || "Primary Checking"}
+            className="mx-0 max-w-none w-full"
           />
         </div>
 
-        <div className="grid min-w-0 flex-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-          <Panel
-            title="Recent Transactions"
-            action={
-              <Link href="/dashboard/transactions" className="text-xs font-semibold text-blue-600 hover:underline">
-                View all
-              </Link>
-            }
-          >
-            {transactions.length === 0 ? (
-              <div className="flex flex-col items-center py-8 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
-                  <HiOutlineClock className="h-6 w-6 text-slate-400" />
+        <div className="grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <StatCard
+            icon={HiOutlineWallet}
+            label="Account Limit"
+            value={formatCurrency(stats?.accountLimit ?? 500000)}
+            sub="Available"
+            color="blue"
+          />
+          <StatCard
+            icon={HiOutlineArrowDownTray}
+            label="Monthly Deposits"
+            value={formatCurrency(stats?.monthlyDeposits ?? 0)}
+            sub="This month"
+            color="green"
+          />
+          <StatCard
+            icon={HiOutlineArrowUpTray}
+            label="Monthly Expenses"
+            value={formatCurrency(stats?.monthlyExpenses ?? 0)}
+            sub="This month"
+            color="red"
+          />
+          <StatCard
+            icon={HiOutlineChartBar}
+            label="Total Volume"
+            value={formatCurrency(stats?.totalVolume ?? 0)}
+            sub="All time"
+            color="purple"
+          />
+        </div>
+
+        <div className="grid w-full gap-4 lg:grid-cols-[minmax(280px,400px)_1fr] lg:items-start lg:gap-6">
+          <div className="hidden w-full lg:block lg:sticky lg:top-24">
+            <BankingCard
+              holderName={fullName.toUpperCase()}
+              fiatBalance={total}
+              accountNumber={primary?.accountNumber}
+              accountLabel={primary?.name || "Primary Checking"}
+              className="mx-0 max-w-none w-full"
+            />
+          </div>
+
+          <div className="grid min-w-0 flex-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <Panel
+              title="Recent Transactions"
+              action={
+                <Link href="/dashboard/transactions" className="text-xs font-semibold text-blue-600 hover:underline">
+                  View all
+                </Link>
+              }
+            >
+              {transactions.length === 0 ? (
+                <div className="flex flex-col items-center py-6 text-center sm:py-8">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
+                    <HiOutlineClock className="h-6 w-6 text-slate-400" />
+                  </div>
+                  <p className="mt-3 text-sm font-medium text-slate-700 dark:text-slate-300">No recent transactions</p>
+                  <p className="mt-1 max-w-xs text-xs text-slate-500">
+                    Deposits and transfers will appear here once your account has activity.
+                  </p>
                 </div>
-                <p className="mt-3 text-sm font-medium text-slate-700 dark:text-slate-300">No recent transactions</p>
-                <p className="mt-1 max-w-xs text-xs text-slate-500">
-                  Deposits and transfers will appear here once your account has activity.
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-slate-100 dark:divide-slate-700">
-                {transactions.slice(0, 6).map((t) => (
-                  <li key={t.id} className="flex items-center justify-between py-3 first:pt-0">
-                    <div className="min-w-0 flex-1 pr-3">
-                      <p className="truncate text-sm font-medium text-slate-800 dark:text-slate-200">
-                        {t.description}
-                      </p>
-                      <p className="text-xs text-slate-400">{t.account}</p>
+              ) : (
+                <ul className="divide-y divide-slate-100 dark:divide-slate-700">
+                  {transactions.slice(0, 6).map((t) => (
+                    <li key={t.id} className="flex items-center justify-between py-3 first:pt-0">
+                      <div className="min-w-0 flex-1 pr-3">
+                        <p className="truncate text-sm font-medium text-slate-800 dark:text-slate-200">
+                          {t.description}
+                        </p>
+                        <p className="text-xs text-slate-400">{t.account}</p>
+                      </div>
+                      <span
+                        className={cn(
+                          "shrink-0 text-sm font-semibold tabular-nums",
+                          t.type === "credit" ? "text-emerald-600" : "text-slate-800 dark:text-slate-200"
+                        )}
+                      >
+                        {t.type === "credit" ? "+" : ""}
+                        {formatCurrency(Math.abs(t.amount))}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Panel>
+
+            <Panel title="Account Statistics">
+              <ul className="space-y-4">
+                {[
+                  {
+                    label: "Transaction limit",
+                    value: formatCurrency(stats?.accountLimit ?? 500000),
+                    icon: HiOutlineWallet,
+                    color: "text-blue-600",
+                  },
+                  {
+                    label: "Pending",
+                    value: formatCurrency(stats?.pendingAmount ?? 0),
+                    icon: HiOutlineClock,
+                    color: "text-amber-600",
+                  },
+                  {
+                    label: "Total volume",
+                    value: formatCurrency(stats?.totalVolume ?? 0),
+                    icon: HiOutlineChartBar,
+                    color: "text-emerald-600",
+                  },
+                ].map((row) => (
+                  <li key={row.label} className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <row.icon className={cn("h-5 w-5 shrink-0", row.color)} />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{row.label}</span>
                     </div>
-                    <span
-                      className={cn(
-                        "shrink-0 text-sm font-semibold tabular-nums",
-                        t.type === "credit" ? "text-emerald-600" : "text-slate-800 dark:text-slate-200"
-                      )}
-                    >
-                      {t.type === "credit" ? "+" : ""}
-                      {formatCurrency(Math.abs(t.amount))}
+                    <span className="text-sm font-bold tabular-nums text-slate-900 dark:text-white">
+                      {row.value}
                     </span>
                   </li>
                 ))}
               </ul>
-            )}
-          </Panel>
-
-          <Panel title="Account Statistics">
-            <ul className="space-y-4">
-              {[
-                {
-                  label: "Transaction limit",
-                  value: formatCurrency(stats?.accountLimit ?? 500000),
-                  icon: HiOutlineWallet,
-                  color: "text-blue-600",
-                },
-                {
-                  label: "Pending",
-                  value: formatCurrency(stats?.pendingAmount ?? 0),
-                  icon: HiOutlineClock,
-                  color: "text-amber-600",
-                },
-                {
-                  label: "Total volume",
-                  value: formatCurrency(stats?.totalVolume ?? 0),
-                  icon: HiOutlineChartBar,
-                  color: "text-emerald-600",
-                },
-              ].map((row) => (
-                <li key={row.label} className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <row.icon className={cn("h-5 w-5 shrink-0", row.color)} />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{row.label}</span>
-                  </div>
-                  <span className="text-sm font-bold tabular-nums text-slate-900 dark:text-white">
-                    {row.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Panel>
+            </Panel>
+          </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Panel title="Quick Actions" className="lg:col-span-1">
+      <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <Panel title="Quick Actions">
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: "Transfer", href: "/dashboard/transfer", icon: HiOutlineArrowsRightLeft },
@@ -237,8 +252,8 @@ export function OceanDashboard({ userName }) {
           </div>
         </Panel>
 
-        <Panel title="Quick Transfer" className="lg:col-span-1">
-          <div className="flex flex-col items-center rounded-xl border border-dashed border-slate-200 py-8 dark:border-slate-600">
+        <Panel title="Quick Transfer">
+          <div className="flex flex-col items-center rounded-xl border border-dashed border-slate-200 py-6 dark:border-slate-600 sm:py-8">
             <button
               type="button"
               className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-white shadow-md"
@@ -256,7 +271,7 @@ export function OceanDashboard({ userName }) {
 
         <Panel
           title="Need assistance?"
-          className="border-blue-100 bg-gradient-to-br from-blue-50/90 to-white dark:border-blue-900/50 dark:from-slate-800 dark:to-slate-800/90 lg:col-span-1"
+          className="border-blue-100 bg-gradient-to-br from-blue-50/90 to-white dark:border-blue-900/50 dark:from-slate-800 dark:to-slate-800/90 sm:col-span-2 lg:col-span-1"
         >
           <p className="text-sm text-slate-600 dark:text-slate-400">
             Encrypted live chat · Typical response under 5 minutes
@@ -279,14 +294,14 @@ export function OceanDashboard({ userName }) {
           </Link>
         }
       >
-        <div className="flex flex-col items-center py-6 sm:flex-row sm:justify-center sm:gap-8">
+        <div className="flex flex-col items-center gap-4 py-4 sm:flex-row sm:justify-center sm:gap-8 sm:py-6">
           <div className="relative h-20 w-32 shrink-0">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-700 shadow-lg" />
             <div className="absolute inset-0 flex items-center justify-center">
               <HiOutlineCreditCard className="h-10 w-10 text-white/90" />
             </div>
           </div>
-          <div className="mt-4 text-center sm:mt-0 sm:text-left">
+          <div className="text-center sm:text-left">
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No active cards</p>
             <p className="mt-1 text-xs text-slate-500">Apply for a debit or credit card</p>
             <Link

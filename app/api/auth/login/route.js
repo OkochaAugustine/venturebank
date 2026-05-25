@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
-import { AUTH_COOKIE, getAuthCookieOptions } from "@/lib/auth-cookies";
+import {
+  AUTH_COOKIE,
+  PIN_COOKIE,
+  getAuthCookieOptions,
+  getPinCookieOptions,
+} from "@/lib/auth-cookies";
+import { buildAuthPayload } from "@/lib/auth-register";
 import { validateLogin } from "@/lib/validations/auth";
 import { ensureDatabase, formatDbError } from "@/lib/auth-helpers";
 import User from "@/models/User";
+import { jsonError, jsonOk } from "@/lib/api-utils";
 
 export const runtime = "nodejs";
 
@@ -14,7 +21,7 @@ export async function POST(request) {
     const errors = validateLogin(body);
 
     if (errors.length > 0) {
-      return NextResponse.json({ error: errors[0], errors }, { status: 400 });
+      return jsonError(errors[0], 400, { errors });
     }
 
     await ensureDatabase();
@@ -24,56 +31,41 @@ export async function POST(request) {
     }).select("+password");
 
     if (user?.role === "admin") {
-      return NextResponse.json(
-        { error: "Use the admin sign-in page at /admin/login" },
-        { status: 403 }
-      );
+      return jsonError("Use the admin sign-in page at /admin/login", 403);
     }
 
     if (!user || !(await bcrypt.compare(body.password, user.password))) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 }
-      );
+      return jsonError("Invalid email or password", 401);
     }
 
     if (!user.isActive) {
-      return NextResponse.json(
-        { error: "Account is disabled. Contact support." },
-        { status: 403 }
-      );
+      return jsonError("Account is disabled. Contact support.", 403);
     }
 
     user.lastLogin = new Date();
     await user.save();
 
-    const token = signToken({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    });
+    const token = signToken(buildAuthPayload(user));
 
-    const response = NextResponse.json({
-      success: true,
+    const response = jsonOk({
       user: {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        pinSet: user.pinSet,
       },
+      requiresPinSetup: !user.pinSet,
+      requiresPinVerify: Boolean(user.pinSet),
+      redirect: !user.pinSet ? "/setup-pin" : "/verify-pin",
     });
 
     response.cookies.set(AUTH_COOKIE, token, getAuthCookieOptions());
+    response.cookies.set(PIN_COOKIE, "", { ...getPinCookieOptions(), maxAge: 0 });
     return response;
   } catch (err) {
     console.error("Login error:", err);
-    const friendly = formatDbError(err);
-    return NextResponse.json(
-      { error: friendly || "Login failed. Please try again." },
-      { status: 500 }
-    );
+    return jsonError(formatDbError(err) || "Login failed. Please try again.", 500);
   }
 }

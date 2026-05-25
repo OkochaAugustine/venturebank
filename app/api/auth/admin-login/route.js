@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
 import { AUTH_COOKIE, getAuthCookieOptions } from "@/lib/auth-cookies";
+import { buildAuthPayload } from "@/lib/auth-register";
 import { ensureDatabase, formatDbError } from "@/lib/auth-helpers";
 import { isWhitelistedAdminEmail } from "@/lib/env";
 import User from "@/models/User";
@@ -51,13 +52,7 @@ export async function POST(request) {
     user.lastLogin = new Date();
     await user.save();
 
-    const token = signToken({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    });
+    const token = signToken(buildAuthPayload(user));
 
     const response = NextResponse.json({
       success: true,

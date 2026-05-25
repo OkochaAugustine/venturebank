@@ -115,7 +115,7 @@ export function RegisterWizard() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
-      router.push("/dashboard");
+      router.push(json.redirect || "/setup-pin");
       router.refresh();
     } catch (e) {
       setError(e.message);

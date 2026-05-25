@@ -3,29 +3,9 @@
 import { useEffect, useState } from "react";
 import { HiOutlineLanguage, HiOutlineChevronDown } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
+import { TRANSLATE_LANGUAGES } from "@/lib/translate-languages";
 
-export const TRANSLATE_LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "pt", label: "Português" },
-  { code: "it", label: "Italiano" },
-  { code: "nl", label: "Nederlands" },
-  { code: "pl", label: "Polski" },
-  { code: "ru", label: "Русский" },
-  { code: "zh-CN", label: "中文 (简体)" },
-  { code: "zh-TW", label: "中文 (繁體)" },
-  { code: "ja", label: "日本語" },
-  { code: "ko", label: "한국어" },
-  { code: "ar", label: "العربية" },
-  { code: "hi", label: "हिन्दी" },
-  { code: "tr", label: "Türkçe" },
-  { code: "vi", label: "Tiếng Việt" },
-  { code: "th", label: "ไทย" },
-  { code: "id", label: "Bahasa Indonesia" },
-  { code: "sv", label: "Svenska" },
-];
+export { TRANSLATE_LANGUAGES };
 
 function getCurrentLang() {
   if (typeof document === "undefined") return "en";

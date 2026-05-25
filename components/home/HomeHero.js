@@ -177,7 +177,7 @@ export function HomeHero() {
 
             <motion.div
               variants={staggerItem}
-              className="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-10 sm:gap-8"
+              className="mt-10 grid w-full grid-cols-3 gap-2 border-t border-white/10 pt-8 sm:mt-12 sm:gap-6 sm:pt-10"
             >
               {heroStats.map((stat) => (
                 <div key={stat.label}>

@@ -12,6 +12,7 @@ import {
   HiOutlineDocumentText,
   HiOutlineGift,
   HiOutlineBuildingLibrary,
+  HiOutlineIdentification,
 } from "react-icons/hi2";
 
 export const dashboardNavSections = [
@@ -43,6 +44,7 @@ export const dashboardNavSections = [
   {
     title: "Account",
     items: [
+      { label: "KYC Verification", href: "/dashboard/kyc", icon: HiOutlineIdentification },
       { label: "Settings", href: "/dashboard/settings", icon: HiOutlineCog6Tooth },
       { label: "Support", href: "/dashboard/support", icon: HiOutlineChatBubbleLeftRight },
     ],
