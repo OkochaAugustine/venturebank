@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-from: #0ea5e9;
+    --gradient-to: #0369a1;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --background: 248 250 252;
+    --foreground: 15 23 42;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+    --muted: 241 245 249;
+    --muted-foreground: 100 116 139;
+    --border: 226 232 240;
+    --ring: 14 165 233;
+    --accent: 201 169 98;
+  }
+
+  .dark {
+    --gradient-from: #0ea5e9;
+    --gradient-to: #082f49;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --background: 10 14 23;
+    --foreground: 248 250 252;
+    --card: 26 35 50;
+    --card-foreground: 248 250 252;
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
+    --border: 51 65 85;
+    --ring: 56 189 248;
+    --accent: 201 169 98;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-[rgb(var(--background))] text-[rgb(var(--foreground))] min-h-screen;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border backdrop-blur-xl;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  .glass-card-strong {
+    @apply glass-card;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--foreground)) 0%,
+      rgb(var(--ring)) 50%,
+      var(--accent, #c9a962) 100%
+    );
+  }
+
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(var(--background), var(--background))
+        padding-box,
+      linear-gradient(135deg, var(--gradient-from), var(--gradient-to))
+        border-box;
+    border: 1px solid transparent;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+  }
+
+  .container-luxury {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .home-page {
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  .font-serif {
+    font-family: var(--font-geist-sans), Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-in-view {
+    @apply opacity-0 translate-y-4;
+  }
+
+  .dashboard-shell {
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+
+  .dashboard-mesh {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(14, 165, 233, 0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(201, 169, 98, 0.08), transparent),
+      radial-gradient(ellipse 50% 50% at 50% 100%, rgba(14, 165, 233, 0.06), transparent);
+  }
+
+  .dashboard-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .home-shell {
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+
+  .home-mesh {
+    background:
+      radial-gradient(ellipse 90% 60% at 50% -20%, rgba(14, 165, 233, 0.22), transparent),
+      radial-gradient(ellipse 50% 40% at 100% 0%, rgba(201, 169, 98, 0.1), transparent),
+      radial-gradient(ellipse 60% 50% at 0% 50%, rgba(14, 165, 233, 0.08), transparent);
+  }
+
+  .home-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .home-hero-glow {
+    background: radial-gradient(
+      ellipse 70% 50% at 50% 0%,
+      rgba(14, 165, 233, 0.15),
+      transparent 70%
+    );
+    animation: homeGlowPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes homeGlowPulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Google Translate — hide banner, fix layout shift */
+.goog-te-banner-frame,
+.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+.goog-te-gadget {
+  font-family: inherit !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgb(226 232 240) !important;
+  font-size: 13px !important;
+  color: rgb(51 65 85) !important;
+  background: white !important;
+  max-width: 100% !important;
+}
+
+.dark .goog-te-gadget .goog-te-combo {
+  border-color: rgb(71 85 105) !important;
+  color: rgb(226 232 240) !important;
+  background: rgb(30 41 59) !important;
+}
+
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.translate-widget-panel .goog-te-gadget-simple {
+  background: transparent !important;
+  border: none !important;
+}
