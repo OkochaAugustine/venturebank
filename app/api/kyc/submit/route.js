@@ -48,6 +48,26 @@ export async function POST(request) {
     };
     await user.save();
 
+    try {
+      const { notifyUser, notifyAdminKycSubmitted } = await import("@/lib/notification-service");
+      await notifyUser({
+        userId: session.id,
+        type: "security", // maps to NOTIFICATION_TYPES.SECURITY in schema
+        title: "KYC documents submitted",
+        message: "Your identity verification is under review. We will notify you within 1–2 business days.",
+        sendEmail: true,
+        emailData: {
+          title: "KYC submitted",
+          message: "Your documents are being reviewed by VentureBank compliance.",
+          txnType: "kyc",
+          status: "pending",
+        },
+      });
+      await notifyAdminKycSubmitted(user, user.kycData);
+    } catch (e) {
+      console.error("KYC notify failed:", e.message);
+    }
+
     return jsonOk({
       success: true,
       kycStatus: user.kycStatus,

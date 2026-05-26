@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/signup", "destination": "/register" },
+    { "source": "/open-account", "destination": "/register" },
+    { "source": "/account/register", "destination": "/register" }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   HiOutlinePaperAirplane,
 } from "react-icons/hi2";
 import { useChat } from "@/hooks/useChat";
+import { useNotifications } from "@/hooks/useNotifications";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -28,7 +29,10 @@ export function GlobalChatWidget() {
     pathname === "/admin/register";
 
   const canChat = open && !isAuthPage && !isAdmin;
+  const pollChat = !isAuthPage && !isAdmin;
   const { messages, loading, sendMessage, unauthorized } = useChat(canChat ? 3000 : 0);
+  const { notifications } = useNotifications(pollChat ? 8000 : 0);
+  const chatUnread = notifications.filter((n) => !n.read && n.type === "chat").length;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -58,7 +62,7 @@ export function GlobalChatWidget() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-4 z-[90] flex h-[min(480px,70vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-600 dark:bg-slate-900 sm:right-6"
+            className="fixed bottom-24 right-4 z-[90] flex h-[min(480px,70vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl sm:right-6"
           >
             <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-3 text-white">
               <div>
@@ -142,6 +146,11 @@ export function GlobalChatWidget() {
         aria-label="Open support chat"
       >
         {open ? <HiOutlineXMark className="h-6 w-6" /> : <HiOutlineChatBubbleLeftRight className="h-6 w-6" />}
+        {!open && chatUnread > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+            {chatUnread > 9 ? "9+" : chatUnread}
+          </span>
+        )}
       </motion.button>
     </>
   );

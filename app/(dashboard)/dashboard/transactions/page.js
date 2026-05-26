@@ -7,11 +7,11 @@ export const metadata = {
 
 export default function TransactionsPage() {
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-ocean-950">Transaction history</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Search, filter, and review activity across all linked accounts.
+    <div className="dashboard-page space-y-6">
+      <div className="surface-card p-5 sm:p-6">
+        <h1 className="text-2xl font-bold text-foreground">Transaction history</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Full ledger with status, references, and real-time sync to your alert center.
         </p>
       </div>
       <StatsRow />

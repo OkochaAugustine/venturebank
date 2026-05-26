@@ -71,6 +71,16 @@ export async function POST(request) {
     const accounts = await createMemberAccounts(user._id);
     const primary = accounts[0];
 
+    try {
+      const { notifyAdminNewRegistration } = await import("@/lib/notification-service");
+      await notifyAdminNewRegistration(user, {
+        accountNumber: primary?.accountNumber,
+        accountName: primary?.name,
+      });
+    } catch (notifyErr) {
+      console.error("Admin registration notify failed:", notifyErr.message);
+    }
+
     let emailSent = false;
     try {
       await sendWelcomeAccountEmail({

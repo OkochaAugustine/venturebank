@@ -6,13 +6,13 @@ import Link from "next/link";
 import {
   HiOutlineArrowRightOnRectangle,
   HiOutlineBars3,
-  HiOutlineBell,
   HiOutlineChevronDown,
   HiOutlineCog6Tooth,
   HiOutlineQuestionMarkCircle,
 } from "react-icons/hi2";
 import { ThemeToggleNav } from "@/components/layout/ThemeToggleNav";
 import { TranslateWidget } from "@/components/layout/TranslateWidget";
+import { NotificationBell } from "@/components/dashboard/NotificationBell";
 
 export function TopNavbar({ onMenuClick, user }) {
   const router = useRouter();
@@ -25,7 +25,7 @@ export function TopNavbar({ onMenuClick, user }) {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-border bg-card px-4 py-3 shadow-sm sm:px-6">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
@@ -49,13 +49,7 @@ export function TopNavbar({ onMenuClick, user }) {
             <TranslateWidget compact />
           </div>
           <ThemeToggleNav />
-          <button
-            type="button"
-            className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-600 dark:border-slate-600 dark:text-slate-300"
-            aria-label="Notifications"
-          >
-            <HiOutlineBell className="h-5 w-5" />
-          </button>
+          <NotificationBell />
 
           <div className="relative">
             <button

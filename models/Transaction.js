@@ -28,6 +28,8 @@ const transactionSchema = new mongoose.Schema(
     description: { type: String },
     recipientAccount: { type: String },
     reference: { type: String, unique: true, sparse: true },
+    reversalOf: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction" },
+    reversedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction" },
     metadata: { type: mongoose.Schema.Types.Mixed },
   },
   { timestamps: true }

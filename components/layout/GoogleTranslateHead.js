@@ -15,24 +15,36 @@ window.googleTranslateElementInit = function () {
     },
     "google_translate_element"
   );
-  window.setTimeout(function () {
+  function syncFromCookie() {
     var lang = "en";
     try {
+      if (!document.cookie.match(/(?:^|;\\s*)googtrans=/)) {
+        document.cookie = "googtrans=/en/en;path=/;max-age=31536000;SameSite=Lax";
+      }
       var match = document.cookie.match(/(?:^|;\\s*)googtrans=([^;]*)/);
       if (match) {
         var parts = decodeURIComponent(match[1]).split("/");
         lang = parts[parts.length - 1] || "en";
       }
     } catch (e) {}
-    if (lang && lang !== "en") {
-      var select = document.querySelector("select.goog-te-combo");
-      if (select) {
-        select.value = lang;
+    var select = document.querySelector("select.goog-te-combo");
+    if (select) {
+      var target = lang && lang !== "en" ? lang : "";
+      if (select.value !== target) {
+        select.value = target;
         select.dispatchEvent(new Event("change", { bubbles: true }));
       }
     }
     window.dispatchEvent(new Event("venturebank:translate-ready"));
-  }, 300);
+  }
+  var attempts = 0;
+  var timer = setInterval(function () {
+    attempts++;
+    if (document.querySelector("select.goog-te-combo") || attempts > 40) {
+      clearInterval(timer);
+      syncFromCookie();
+    }
+  }, 100);
 };
 `;
 

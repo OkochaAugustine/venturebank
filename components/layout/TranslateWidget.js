@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { HiOutlineLanguage, HiOutlineChevronDown } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { TRANSLATE_LANGUAGES } from "@/lib/translate-languages";
-import { applyPageLanguage, getStoredLanguage } from "@/lib/google-translate";
+import { applyPageLanguage, ensureEnglishDefault, getStoredLanguage } from "@/lib/google-translate";
 
 export { TRANSLATE_LANGUAGES };
 
@@ -19,6 +19,7 @@ export function TranslateWidget({ compact = false, className }) {
   }, []);
 
   useEffect(() => {
+    ensureEnglishDefault();
     setMounted(true);
     syncLang();
     window.addEventListener("venturebank:translate-ready", syncLang);

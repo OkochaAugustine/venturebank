@@ -46,6 +46,13 @@ export async function POST(request) {
     user.pinSet = true;
     await user.save();
 
+    const { notifySecurityEvent } = await import("@/lib/notification-service");
+    await notifySecurityEvent(session.id, {
+      title: "Banking PIN changed",
+      message: "Your banking PIN was updated. If you did not make this change, contact VentureBank immediately.",
+      event: "pin_reset",
+    });
+
     const response = jsonOk({ success: true, message: "PIN updated successfully" });
     response.cookies.set(PIN_COOKIE, "1", getPinCookieOptions());
     return response;

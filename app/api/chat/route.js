@@ -4,6 +4,7 @@ import { ensureDatabase, formatDbError } from "@/lib/auth-helpers";
 import { requireApiSession } from "@/lib/api-auth";
 import Message from "@/models/Message";
 import { USER_ROLES } from "@/lib/constants";
+import { notifyChatMessage } from "@/lib/notification-service";
 
 export const runtime = "nodejs";
 
@@ -56,6 +57,13 @@ export async function POST(request) {
       senderRole: USER_ROLES.USER,
       content: content.trim(),
       read: false,
+    });
+
+    await notifyChatMessage({
+      userId: session.id,
+      content: content.trim(),
+      messageId: message._id,
+      fromAdmin: false,
     });
 
     return NextResponse.json({

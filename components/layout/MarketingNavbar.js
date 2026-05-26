@@ -45,10 +45,8 @@ export function MarketingNavbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "sticky top-0 z-40 border-b transition-shadow duration-300 dark:border-slate-700 dark:bg-slate-900/95",
-        scrolled
-          ? "border-slate-200/80 bg-white/95 shadow-md backdrop-blur-md dark:bg-slate-900/98"
-          : "border-slate-200 bg-white shadow-sm dark:bg-slate-900"
+        "sticky top-0 z-40 border-b border-border bg-card transition-shadow duration-300",
+        scrolled ? "shadow-md backdrop-blur-md bg-card/95" : "shadow-sm"
       )}
     >
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-2 px-4 sm:h-[76px] sm:px-6 lg:px-8">
@@ -59,7 +57,7 @@ export function MarketingNavbar() {
           >
             <span className="text-base font-bold text-white">V</span>
           </motion.div>
-          <span className="font-serif text-lg font-semibold tracking-tight text-slate-900 transition-colors group-hover:text-blue-700 dark:text-white sm:text-xl">
+          <span className="font-serif text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-brand-600 sm:text-xl">
             {siteConfig.name}
           </span>
         </Link>
@@ -74,8 +72,8 @@ export function MarketingNavbar() {
                   className={cn(
                     "relative whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-medium transition-colors xl:text-[14px]",
                     active
-                      ? "text-blue-700 dark:text-blue-300"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                      ? "text-brand-700 dark:text-brand-300"
+                      : "text-muted-foreground hover:bg-muted hover:text-brand-700"
                   )}
                 >
                   {item.label}

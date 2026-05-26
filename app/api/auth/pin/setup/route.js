@@ -46,6 +46,13 @@ export async function POST(request) {
     user.pinSet = true;
     await user.save();
 
+    const { notifySecurityEvent } = await import("@/lib/notification-service");
+    await notifySecurityEvent(user._id, {
+      title: "Banking PIN created",
+      message: "Your secure banking PIN was set successfully. You will need it for transfers, deposits, and withdrawals.",
+      event: "pin_created",
+    });
+
     const newToken = signToken(buildAuthPayload(user));
     const response = jsonOk({ success: true, message: "PIN created successfully" });
     response.cookies.set(AUTH_COOKIE, newToken, getAuthCookieOptions());

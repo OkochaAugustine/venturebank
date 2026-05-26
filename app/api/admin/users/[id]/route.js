@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 import { ensureDatabase, formatDbError } from "@/lib/auth-helpers";
 import { requireAdminSession } from "@/lib/api-auth";
 import User from "@/models/User";
 import Account from "@/models/Account";
-import Transaction from "@/models/Transaction";
 import { formatTransactionsForUI, getUserTransactions } from "@/lib/dashboard-service";
-import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUS,
-} from "@/lib/constants";
+import { adminAdjustBalance } from "@/lib/banking-service";
+import { TRANSACTION_TYPES } from "@/lib/constants";
+import { jsonError, jsonOk } from "@/lib/api-utils";
 
 export const runtime = "nodejs";
 
@@ -61,87 +58,71 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     const { error, status } = await requireAdminSession();
-    if (error) return NextResponse.json({ error }, { status });
+    if (error) return jsonError(error, status);
 
     const { id } = await params;
     const body = await request.json();
     await ensureDatabase();
 
     const user = await User.findById(id);
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    if (!user) return jsonError("User not found", 404);
 
     if (typeof body.isActive === "boolean") {
       user.isActive = body.isActive;
       await user.save();
     }
 
-    return NextResponse.json({ success: true });
+    return jsonOk({ success: true });
   } catch (err) {
-    const msg = formatDbError(err);
-    return NextResponse.json({ error: msg || "Update failed" }, { status: 500 });
+    return jsonError(formatDbError(err) || "Update failed", 500);
   }
 }
 
 export async function POST(request, { params }) {
   try {
-    const { error, status } = await requireAdminSession();
-    if (error) return NextResponse.json({ error }, { status });
+    const { session, error, status } = await requireAdminSession();
+    if (error) return jsonError(error, status);
 
     const { id } = await params;
     const body = await request.json();
-    const { accountId, amount, description, type = TRANSACTION_TYPES.DEPOSIT } = body;
+    const { accountId, amount, description, type, action } = body;
 
     if (!accountId || !amount || amount <= 0) {
-      return NextResponse.json({ error: "Invalid deposit data" }, { status: 400 });
+      return jsonError("Invalid transaction data", 400);
     }
 
     await ensureDatabase();
 
-    const account = await Account.findOne({ _id: accountId, userId: id });
-    if (!account) {
-      return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    const credit = action === "credit" || type === TRANSACTION_TYPES.DEPOSIT;
+    const debit = action === "debit" || type === TRANSACTION_TYPES.WITHDRAWAL;
+
+    if (!credit && !debit) {
+      return jsonError("Specify action: credit or debit", 400);
     }
 
-    if (type === TRANSACTION_TYPES.DEPOSIT) {
-      account.balance += Number(amount);
-    } else if (type === TRANSACTION_TYPES.WITHDRAWAL) {
-      if (account.balance < amount) {
-        return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
-      }
-      account.balance -= Number(amount);
-    }
-
-    await account.save();
-
-    const reference = `ADM-${Date.now().toString(36).toUpperCase()}`;
-    const txn = await Transaction.create({
-      userId: new mongoose.Types.ObjectId(id),
-      accountId: account._id,
-      type,
+    const result = await adminAdjustBalance(id, {
+      accountId,
       amount: Number(amount),
-      status: TRANSACTION_STATUS.COMPLETED,
-      description: description || (type === TRANSACTION_TYPES.DEPOSIT ? "Admin deposit" : "Admin withdrawal"),
-      reference,
-      metadata: { category: "Admin", adminAction: true },
+      type: credit ? TRANSACTION_TYPES.DEPOSIT : TRANSACTION_TYPES.WITHDRAWAL,
+      description,
+      adminId: session.id,
+      action: credit ? "credit" : "debit",
     });
 
-    return NextResponse.json({
+    return jsonOk({
       success: true,
       account: {
-        id: account._id.toString(),
-        balance: account.balance,
+        id: result.account._id.toString(),
+        balance: result.account.balance,
       },
       transaction: {
-        id: txn._id.toString(),
-        reference: txn.reference,
-        amount: txn.amount,
-        type: txn.type,
+        id: result.transaction._id.toString(),
+        reference: result.reference,
+        amount: result.transaction.amount,
+        type: result.transaction.type,
       },
     });
   } catch (err) {
-    const msg = formatDbError(err);
-    return NextResponse.json({ error: msg || "Transaction failed" }, { status: 500 });
+    return jsonError(err.message || formatDbError(err) || "Transaction failed", err.status || 500);
   }
 }

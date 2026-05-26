@@ -13,6 +13,8 @@ import {
   HiOutlineGift,
   HiOutlineBuildingLibrary,
   HiOutlineIdentification,
+  HiOutlineBell,
+  HiOutlineArrowUpTray,
 } from "react-icons/hi2";
 
 export const dashboardNavSections = [
@@ -20,6 +22,7 @@ export const dashboardNavSections = [
     title: "Main",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: HiOutlineHome },
+      { label: "Alerts", href: "/dashboard/alerts", icon: HiOutlineBell },
       { label: "Transactions", href: "/dashboard/transactions", icon: HiOutlineArrowsRightLeft },
       { label: "Cards", href: "/dashboard/cards", icon: HiOutlineCreditCard },
     ],
@@ -30,6 +33,7 @@ export const dashboardNavSections = [
       { label: "Local Transfer", href: "/dashboard/transfer", icon: HiOutlineArrowsRightLeft },
       { label: "International", href: "/dashboard/transfer/international", icon: HiOutlineGlobeAlt },
       { label: "Deposit", href: "/dashboard/deposit", icon: HiOutlineArrowDownTray },
+      { label: "Withdraw", href: "/dashboard/withdraw", icon: HiOutlineArrowUpTray },
       { label: "Currency Swap", href: "/dashboard/swap", icon: HiOutlineArrowsUpDown },
     ],
   },

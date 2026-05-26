@@ -5,6 +5,7 @@ import { requireAdminSession } from "@/lib/api-auth";
 import Message from "@/models/Message";
 import User from "@/models/User";
 import { USER_ROLES } from "@/lib/constants";
+import { notifyChatMessage } from "@/lib/notification-service";
 
 export const runtime = "nodejs";
 
@@ -108,7 +109,14 @@ export async function POST(request) {
       senderId: new mongoose.Types.ObjectId(session.id),
       senderRole: USER_ROLES.ADMIN,
       content: content.trim(),
-      read: true,
+      read: false,
+    });
+
+    await notifyChatMessage({
+      userId,
+      content: content.trim(),
+      messageId: message._id,
+      fromAdmin: true,
     });
 
     return NextResponse.json({

@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { HiOutlineMoon, HiOutlineSun, HiOutlineComputerDesktop } from "react-icons/hi2";
 import { PinResetSection } from "@/components/dashboard/PinResetSection";
+import { ProfileSettingsForm } from "@/components/dashboard/ProfileSettingsForm";
 import { cn } from "@/lib/utils";
 
 const themeOptions = [
@@ -52,6 +53,14 @@ export default function SettingsPage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="surface-card p-5 sm:p-6">
+        <h2 className="font-semibold text-foreground">Profile</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Updates trigger email and in-app security alerts
+        </p>
+        <ProfileSettingsForm />
       </section>
 
       <section className="surface-card p-5 sm:p-6">

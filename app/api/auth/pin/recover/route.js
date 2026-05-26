@@ -41,6 +41,13 @@ export async function POST(request) {
     user.pinSet = true;
     await user.save();
 
+    const { notifySecurityEvent } = await import("@/lib/notification-service");
+    await notifySecurityEvent(session.id, {
+      title: "Banking PIN recovered",
+      message: "Your banking PIN was reset using your account password. If this wasn't you, contact support immediately.",
+      event: "pin_recover",
+    });
+
     const response = jsonOk({ success: true, message: "PIN reset. You can sign in with your new PIN." });
     response.cookies.set(PIN_COOKIE, "1", getPinCookieOptions());
     return response;
