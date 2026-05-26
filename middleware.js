@@ -1,19 +1,25 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { AUTH_COOKIE, PIN_COOKIE } from "@/lib/auth-cookies";
-import { getJwtSecretOrPlaceholder } from "@/lib/env";
+import { getJwtSecret } from "@/lib/env";
 
 const memberAuthPaths = ["/login", "/register"];
 const adminAuthPaths = ["/admin/login", "/admin/register"];
 const pinPaths = ["/setup-pin", "/verify-pin"];
 
 function getSecret() {
-  return new TextEncoder().encode(getJwtSecretOrPlaceholder());
+  try {
+    return new TextEncoder().encode(getJwtSecret());
+  } catch {
+    return null;
+  }
 }
 
 async function verifyAuthToken(token) {
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const secret = getSecret();
+    if (!secret) return null;
+    const { payload } = await jwtVerify(token, secret);
     return payload;
   } catch {
     return null;
@@ -66,7 +72,10 @@ export async function middleware(request) {
   }
 
   if (isDashboardRoute && session?.role === "admin") {
-    return NextResponse.redirect(new URL("/admin", request.url));
+    // Do not force dashboard → admin redirects from edge middleware.
+    // This avoids production-only misroutes if a stale/invalid token is present.
+    // Admin routes are still protected below.
+    return NextResponse.next();
   }
 
   if (isDashboardRoute && session && session.role !== "admin") {
