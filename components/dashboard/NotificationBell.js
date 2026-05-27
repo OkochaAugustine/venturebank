@@ -7,11 +7,13 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { formatDate, cn } from "@/lib/utils";
 
 export function NotificationBell() {
-  const { notifications, unreadCount, markRead, markAllRead } = useNotifications(5000);
+  const { notifications, unreadCount, markRead, markAllRead } =
+    useNotifications(5000);
+
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative z-[9999]">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -32,82 +34,103 @@ export function NotificationBell() {
           {/* Overlay */}
           <button
             type="button"
-            className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[998] bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
-            aria-label="Close"
+            aria-label="Close notifications"
           />
 
-          {/* Centered Notification Modal */}
-          <div className="fixed left-1/2 top-1/2 z-[70] w-[min(360px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <p className="font-semibold text-foreground">Alerts</p>
+          {/* TRUE CENTER CONTAINER */}
+          <div
+            className="
+              fixed inset-0 z-[999]
+              flex items-center justify-center
+              px-4
+            "
+          >
+            {/* Modal Card */}
+            <div
+              className="
+                w-full max-w-[380px]
+                overflow-hidden rounded-2xl
+                border border-border
+                bg-card shadow-2xl
+              "
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <p className="font-semibold text-foreground">Alerts</p>
 
-              {unreadCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => markAllRead()}
-                  className="flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
-                >
-                  <HiOutlineCheck className="h-4 w-4" />
-                  Mark all read
-                </button>
-              )}
-            </div>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => markAllRead()}
+                    className="flex items-center gap-1 text-xs font-semibold text-brand-600 hover:underline"
+                  >
+                    <HiOutlineCheck className="h-4 w-4" />
+                    Mark all read
+                  </button>
+                )}
+              </div>
 
-            <ul className="max-h-[min(400px,60vh)] overflow-y-auto">
-              {notifications.length === 0 ? (
-                <li className="px-4 py-8 text-center text-sm text-muted-foreground">
-                  No alerts yet
-                </li>
-              ) : (
-                notifications.slice(0, 15).map((n) => (
-                  <li key={n.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!n.read) markRead([n.id]);
-                      }}
-                      className={cn(
-                        "w-full border-b border-border px-4 py-3 text-left transition-colors hover:bg-muted/50",
-                        !n.read && "bg-brand-500/5"
-                      )}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm font-semibold text-foreground">
-                          {n.title}
+              {/* Notifications */}
+              <ul className="max-h-[65vh] overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <li className="px-4 py-8 text-center text-sm text-muted-foreground">
+                    No alerts yet
+                  </li>
+                ) : (
+                  notifications.slice(0, 15).map((n) => (
+                    <li key={n.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!n.read) {
+                            markRead([n.id]);
+                          }
+                        }}
+                        className={cn(
+                          "w-full border-b border-border px-4 py-3 text-left transition-colors hover:bg-muted/50",
+                          !n.read && "bg-brand-500/5"
+                        )}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm font-semibold text-foreground">
+                            {n.title}
+                          </p>
+
+                          {!n.read && (
+                            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand-500" />
+                          )}
+                        </div>
+
+                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                          {n.message}
                         </p>
 
-                        {!n.read && (
-                          <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-brand-500" />
-                        )}
-                      </div>
+                        <p className="mt-2 text-[10px] text-muted-foreground">
+                          {formatDate(n.createdAt, {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </button>
+                    </li>
+                  ))
+                )}
+              </ul>
 
-                      <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                        {n.message}
-                      </p>
-
-                      <p className="mt-1 text-[10px] text-muted-foreground">
-                        {formatDate(n.createdAt, {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </button>
-                  </li>
-                ))
-              )}
-            </ul>
-
-            <div className="border-t border-border p-3">
-              <Link
-                href="/dashboard/alerts"
-                onClick={() => setOpen(false)}
-                className="block text-center text-sm font-semibold text-brand-600 hover:underline"
-              >
-                View alert center
-              </Link>
+              {/* Footer */}
+              <div className="border-t border-border p-3">
+                <Link
+                  href="/dashboard/alerts"
+                  onClick={() => setOpen(false)}
+                  className="block text-center text-sm font-semibold text-brand-600 transition hover:underline"
+                >
+                  View alert center
+                </Link>
+              </div>
             </div>
           </div>
         </>
