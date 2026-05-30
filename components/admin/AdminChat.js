@@ -70,37 +70,39 @@ export function AdminChat() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-10rem)] gap-4">
-      <div className="w-72 shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white">
+    <div className="flex min-h-[60vh] flex-col gap-4 lg:min-h-[calc(100vh-10rem)] lg:flex-row">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white lg:w-72">
         <p className="border-b border-slate-100 px-4 py-3 text-xs font-bold uppercase text-slate-500">Threads</p>
-        {threads.map((t) => (
-          <button
-            key={t.userId}
-            type="button"
-            onClick={() => {
-              setSelectedUser(t.userId);
-              setMessages([]);
-            }}
-            className={`w-full border-b border-slate-50 px-4 py-3 text-left hover:bg-slate-50 ${
-              selectedUser === t.userId ? "bg-ocean-50" : ""
-            }`}
-          >
-            <p className="font-medium text-sm text-slate-800">{t.name}</p>
-            <p className="truncate text-xs text-slate-500">{t.lastMessage}</p>
-            {t.unread > 0 && (
-              <span className="mt-1 inline-block rounded-full bg-red-500 px-2 py-0.5 text-[10px] text-white">
-                {t.unread}
-              </span>
-            )}
-          </button>
-        ))}
-        {!threads.length && <p className="p-4 text-sm text-slate-500">No conversations yet.</p>}
+        <div className="overflow-y-auto p-2">
+          {threads.map((t) => (
+            <button
+              key={t.userId}
+              type="button"
+              onClick={() => {
+                setSelectedUser(t.userId);
+                setMessages([]);
+              }}
+              className={`w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-left shadow-sm transition hover:bg-slate-50 ${
+                selectedUser === t.userId ? "bg-ocean-50" : ""
+              }`}
+            >
+              <p className="font-medium text-sm text-slate-800">{t.name}</p>
+              <p className="truncate text-xs text-slate-500">{t.lastMessage}</p>
+              {t.unread > 0 && (
+                <span className="mt-2 inline-block rounded-full bg-red-500 px-2 py-0.5 text-[10px] text-white">
+                  {t.unread}
+                </span>
+              )}
+            </button>
+          ))}
+          {!threads.length && <p className="p-4 text-sm text-slate-500">No conversations yet.</p>}
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col rounded-xl border border-slate-200 bg-white">
+      <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-slate-200 bg-white">
         {selectedUser ? (
           <>
-            <div className="flex-1 space-y-2 overflow-y-auto p-4">
+            <div className="flex-1 min-h-0 space-y-2 overflow-y-auto p-4">
               {messages.map((m) => (
                 <div key={m.id} className={`flex ${m.isOwn ? "justify-end" : "justify-start"}`}>
                   <div
@@ -117,18 +119,22 @@ export function AdminChat() {
               ))}
               <div ref={bottomRef} />
             </div>
-            <form onSubmit={sendReply} className="flex gap-2 border-t border-slate-100 p-4">
+            <form onSubmit={sendReply} className="flex flex-col gap-2 border-t border-slate-100 p-4 sm:flex-row">
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm"
                 placeholder="Reply to member..."
               />
-              <Button type="submit" variant="primary">Send</Button>
+              <Button type="submit" variant="primary" className="w-full sm:w-auto">
+                Send
+              </Button>
             </form>
           </>
         ) : (
-          <p className="flex flex-1 items-center justify-center text-slate-500">Select a conversation</p>
+          <p className="flex flex-1 items-center justify-center p-8 text-slate-500">
+            Select a conversation
+          </p>
         )}
       </div>
     </div>
