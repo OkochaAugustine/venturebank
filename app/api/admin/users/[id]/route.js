@@ -5,7 +5,8 @@ import User from "@/models/User";
 import Account from "@/models/Account";
 import { formatTransactionsForUI, getUserTransactions } from "@/lib/dashboard-service";
 import { adminAdjustBalance } from "@/lib/banking-service";
-import { TRANSACTION_TYPES } from "@/lib/constants";
+import { TRANSACTION_TYPES, NOTIFICATION_TYPES } from "@/lib/constants";
+import { notifyUser } from "@/lib/notification-service";
 import { jsonError, jsonOk } from "@/lib/api-utils";
 
 export const runtime = "nodejs";
@@ -83,15 +84,42 @@ export async function POST(request, { params }) {
     const { session, error, status } = await requireAdminSession();
     if (error) return jsonError(error, status);
 
-    const { id } = await params;
+      const { id } = await params;
     const body = await request.json();
+
+    await ensureDatabase();
+
+    if (body.action === "message") {
+      const message = body.message?.trim();
+      const title = body.title?.trim() || "Message from VentureBank";
+      if (!message) {
+        return jsonError("Message content is required", 400);
+      }
+
+      await notifyUser({
+        userId: id,
+        type: NOTIFICATION_TYPES.CHAT,
+        title,
+        message,
+        priority: "high",
+        metadata: { fromAdmin: true, sentBy: session.id, timestamp: new Date().toISOString() },
+        sendEmail: true,
+        emailData: {
+          title,
+          message,
+          txnType: "admin_message",
+          status: "new",
+        },
+      });
+
+      return jsonOk({ success: true });
+    }
+
     const { accountId, amount, description, type, action } = body;
 
     if (!accountId || !amount || amount <= 0) {
       return jsonError("Invalid transaction data", 400);
     }
-
-    await ensureDatabase();
 
     const credit = action === "credit" || type === TRANSACTION_TYPES.DEPOSIT;
     const debit = action === "debit" || type === TRANSACTION_TYPES.WITHDRAWAL;

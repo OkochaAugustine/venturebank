@@ -17,15 +17,8 @@ import { cn } from "@/lib/utils";
 const STEPS = [
   { id: 1, title: "Personal", icon: HiOutlineUser },
   { id: 2, title: "Credentials", icon: HiOutlineLockClosed },
-  { id: 3, title: "Security", icon: HiOutlineShieldCheck },
+  { id: 3, title: "Terms", icon: HiOutlineShieldCheck },
   { id: 4, title: "Verify", icon: HiOutlineCheckCircle },
-];
-
-const SECURITY_QUESTIONS = [
-  "What was the name of your first pet?",
-  "What city were you born in?",
-  "What is your mother's maiden name?",
-  "What was your first school?",
 ];
 
 export function RegisterWizard() {
@@ -41,8 +34,6 @@ export function RegisterWizard() {
     phone: "",
     password: "",
     confirmPassword: "",
-    securityQuestion: SECURITY_QUESTIONS[0],
-    securityAnswer: "",
     verificationCode: "",
     agreeTerms: false,
   });
@@ -62,7 +53,6 @@ export function RegisterWizard() {
       if (form.password !== form.confirmPassword) return "Passwords do not match";
     }
     if (step === 3) {
-      if (!form.securityAnswer.trim()) return "Security answer is required";
       if (!form.agreeTerms) return "You must accept the terms";
     }
     if (step === 4) {
@@ -198,12 +188,6 @@ export function RegisterWizard() {
           )}
           {step === 3 && (
             <>
-              <Select label="Security question" value={form.securityQuestion} onChange={(e) => update("securityQuestion", e.target.value)}>
-                {SECURITY_QUESTIONS.map((q) => (
-                  <option key={q} value={q}>{q}</option>
-                ))}
-              </Select>
-              <Input label="Security answer" value={form.securityAnswer} onChange={(e) => update("securityAnswer", e.target.value)} required />
               <label className="flex items-start gap-3 text-sm text-slate-600">
                 <input type="checkbox" checked={form.agreeTerms} onChange={(e) => update("agreeTerms", e.target.checked)} className="mt-1" />
                 I agree to the Terms of Service, Privacy Policy, and E-Sign consent.

@@ -47,7 +47,7 @@ export function QuickTransfer() {
     setModalOpen(true);
   }
 
-  async function executeTransfer({ pin, securityAnswer }) {
+  async function executeTransfer({ pin }) {
     setSubmitting(true);
     try {
       const res = await fetch("/api/banking/transfer", {
@@ -61,7 +61,6 @@ export function QuickTransfer() {
           recipientAccount,
           description: note,
           pin,
-          securityAnswer,
         }),
       });
       const json = await res.json();

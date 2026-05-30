@@ -1,8 +1,7 @@
 import { requireBankingSession } from "@/lib/api-auth";
 import { verifyTransactionAuth } from "@/lib/banking-security";
-import { createPaystackDepositIntent } from "@/lib/banking-service";
+import { createDepositRequest } from "@/lib/banking-service";
 import { jsonError, jsonOk } from "@/lib/api-utils";
-import { getPaystackClientKey } from "@/lib/paystack";
 import { formatDbError } from "@/lib/auth-helpers";
 
 export const runtime = "nodejs";
@@ -22,30 +21,20 @@ export async function POST(request) {
     const auth = await verifyTransactionAuth(session.id, { pin });
     if (!auth.ok) return jsonError(auth.error, auth.status);
 
-    const result = await createPaystackDepositIntent(session.id, {
+    const result = await createDepositRequest(session.id, {
       accountId,
       amount: Number(amount),
-      method: method || "paystack",
+      method: method || "wire",
       description,
     });
 
     return jsonOk({
-      payment: {
-        publicKey: getPaystackClientKey(),
-        reference: result.reference,
-        email: session.email,
-        amount: result.transaction.amount,
-        currency: result.transaction.currency,
-      },
-      transaction: {
-        id: result.transaction._id.toString(),
-        reference: result.reference,
-        amount: result.transaction.amount,
-        status: result.transaction.status,
-      },
-      message: "Paystack checkout ready. Complete payment to credit your account.",
+      reference: result.reference,
+      firstName: session.firstName,
+      lastName: session.lastName,
+      message: "Deposit request submitted successfully.",
     });
   } catch (err) {
-    return jsonError(err.message || formatDbError(err) || "Deposit initialization failed", err.status || 500);
+    return jsonError(err.message || formatDbError(err) || "Deposit request failed", err.status || 500);
   }
 }

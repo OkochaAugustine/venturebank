@@ -23,9 +23,9 @@ export function TransactionSecurityModal({
 }) {
   const [step, setStep] = useState("review");
   const [pin, setPin] = useState("");
-  const [securityAnswer, setSecurityAnswer] = useState("");
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -35,12 +35,12 @@ export function TransactionSecurityModal({
     if (loading) return;
     setStep("review");
     setPin("");
-    setSecurityAnswer("");
     setError("");
     onClose();
   }
 
   async function handleConfirm() {
+    if (pending || loading) return;
     setError("");
 
     if (step === "review") {
@@ -53,16 +53,18 @@ export function TransactionSecurityModal({
       return;
     }
 
-    if (!securityAnswer.trim()) {
-      setError("Enter your security answer");
-      return;
-    }
-
+    setPending(true);
     try {
-      await onConfirm({ pin, securityAnswer });
+      await onConfirm({ pin });
+      // success — close modal
       handleClose();
     } catch (e) {
-      setError(e.message || "Verification failed");
+      // keep modal open and surface backend message
+      const msg = e?.message || (e && e.error) || "Verification failed";
+      setError(msg);
+      setStep("security");
+    } finally {
+      setPending(false);
     }
   }
 
@@ -129,13 +131,6 @@ export function TransactionSecurityModal({
                     setPin(e.target.value.replace(/\D/g, "").slice(0, 6))
                   }
                 />
-
-                <Input
-                  label="Security answer"
-                  type="password"
-                  value={securityAnswer}
-                  onChange={(e) => setSecurityAnswer(e.target.value)}
-                />
               </div>
             )}
 
@@ -162,10 +157,10 @@ export function TransactionSecurityModal({
                 variant="primary"
                 className="flex-1"
                 onClick={handleConfirm}
-                disabled={loading}
+                disabled={loading || pending}
               >
                 <HiOutlineLockClosed className="mr-2 h-4 w-4" />
-                {loading
+                {(loading || pending)
                   ? "Processing..."
                   : step === "review"
                   ? "Continue"

@@ -12,8 +12,18 @@ export const runtime = "nodejs";
 
 export async function POST(request) {
   try {
-    const { email, password } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
 
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Request body must be JSON object" }, { status: 400 });
+    }
+
+    const { email, password } = body;
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 });
     }
@@ -44,7 +54,13 @@ export async function POST(request) {
       return NextResponse.json({ error: "Account is disabled" }, { status: 403 });
     }
 
-    const valid = await bcrypt.compare(password, user.password);
+    let valid = false;
+    try {
+      valid = await bcrypt.compare(password, user.password);
+    } catch (bcryptErr) {
+      console.error("[Admin Login] bcrypt error:", bcryptErr.message);
+      return NextResponse.json({ error: "Authentication error" }, { status: 500 });
+    }
     if (!valid) {
       return NextResponse.json({ error: "Invalid admin credentials" }, { status: 401 });
     }

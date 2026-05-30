@@ -41,7 +41,7 @@ export function WithdrawForm() {
     setModalOpen(true);
   }
 
-  async function executeWithdraw({ pin, securityAnswer }) {
+  async function executeWithdraw({ pin }) {
     setSubmitting(true);
     try {
       const res = await fetch("/api/banking/withdraw", {
@@ -53,7 +53,6 @@ export function WithdrawForm() {
           amount: parseFloat(amount),
           description: note,
           pin,
-          securityAnswer,
         }),
       });
       const json = await res.json();

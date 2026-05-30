@@ -12,7 +12,7 @@ export async function POST(request) {
     if (error) return jsonError(error, status);
 
     const body = await request.json();
-    const { accountId, amount, description, pin, securityAnswer } = body;
+    const { accountId, amount, description, pin } = body;
 
     if (!accountId || !amount || amount <= 0) {
       return jsonError("Invalid withdrawal details", 400);
@@ -20,7 +20,7 @@ export async function POST(request) {
 
     await ensureDatabase();
 
-    const auth = await verifyTransactionAuth(session.id, { pin, securityAnswer });
+    const auth = await verifyTransactionAuth(session.id, { pin });
     if (!auth.ok) return jsonError(auth.error, auth.status);
 
     const result = await createWithdrawalRequest(session.id, {

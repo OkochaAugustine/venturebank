@@ -15,8 +15,6 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String },
     phone: { type: String, trim: true },
     emailVerified: { type: Boolean, default: false },
-    securityQuestion: { type: String, select: false },
-    securityAnswer: { type: String, select: false },
     pinHash: { type: String, select: false },
     pinSet: { type: Boolean, default: false },
     kycStatus: {

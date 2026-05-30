@@ -51,9 +51,6 @@ export async function POST(request) {
     }
 
     const hashed = await bcrypt.hash(body.password, 12);
-    const securityAnswerHash = body.securityAnswer
-      ? await bcrypt.hash(body.securityAnswer.toLowerCase().trim(), 10)
-      : undefined;
 
     const user = await User.create({
       firstName: body.firstName.trim(),
@@ -64,8 +61,6 @@ export async function POST(request) {
       role: USER_ROLES.USER,
       emailVerified: true,
       pinSet: false,
-      securityQuestion: body.securityQuestion,
-      securityAnswer: securityAnswerHash,
     });
 
     const accounts = await createMemberAccounts(user._id);
