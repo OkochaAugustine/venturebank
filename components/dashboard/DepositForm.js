@@ -110,20 +110,7 @@ export function DepositForm() {
           <p className="mt-2 text-slate-700">
             Choose the amount and method, then continue to view the exact wallet and bank details for your transfer.
           </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.12em] text-emerald-700">Crypto wallet</p>
-              <div className="mt-4 space-y-4 text-sm text-slate-700">
-                <div className="rounded-3xl bg-emerald-50 p-4">
-                  <p className="font-semibold text-slate-900">Bitcoin (BTC)</p>
-                  <p className="mt-2 font-mono text-xs text-slate-500">1Ventur3BankCryptoWalletXYZ12345</p>
-                </div>
-                <div className="rounded-3xl bg-emerald-50 p-4">
-                  <p className="font-semibold text-slate-900">Ethereum (ETH)</p>
-                  <p className="mt-2 font-mono text-xs text-slate-500">0xVentur3BankCryptoWalletABC67890</p>
-                </div>
-              </div>
-            </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-1">
             <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.12em] text-emerald-700">Bank deposit</p>
               <div className="mt-4 space-y-3 text-sm text-slate-700">
@@ -211,21 +198,7 @@ export function DepositForm() {
                 </div>
               </div>
 
-              <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-                <div className="rounded-[1.75rem] border border-emerald-500/20 bg-slate-900/90 p-4 shadow-sm sm:p-6">
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">Crypto wallet</p>
-                  <div className="mt-4 space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-300">
-                    <div className="rounded-3xl bg-slate-950/70 p-3 sm:p-4">
-                      <p className="font-semibold text-white">Bitcoin (BTC)</p>
-                      <p className="mt-2 font-mono text-xs text-slate-400 break-all">1Ventur3BankCryptoWalletXYZ12345</p>
-                    </div>
-                    <div className="rounded-3xl bg-slate-950/70 p-3 sm:p-4">
-                      <p className="font-semibold text-white">Ethereum (ETH)</p>
-                      <p className="mt-2 font-mono text-xs text-slate-400 break-all">0xVentur3BankCryptoWalletABC67890</p>
-                    </div>
-                  </div>
-                </div>
-
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-1">
                 <div className="rounded-[1.75rem] border border-emerald-500/20 bg-slate-900/90 p-4 shadow-sm sm:p-6">
                   <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">Bank deposit</p>
                   <div className="mt-4 space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-300">
