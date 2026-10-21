@@ -17,10 +17,13 @@ export function BankingCard({
   accountNumber,
   accountLabel = "Primary Checking",
   balance,
+  fiatBalance,
   className,
 }) {
   const [hidden, setHidden] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+
+  const resolvedBalance = balance ?? fiatBalance;
 
   const parseBalanceValue = (value) => {
     if (value === undefined || value === null || value === "") {
@@ -55,7 +58,7 @@ export function BankingCard({
       : null;
   };
 
-  const numericBalance = parseBalanceValue(balance);
+  const numericBalance = parseBalanceValue(resolvedBalance);
 
   const displayBalance =
     numericBalance === null
