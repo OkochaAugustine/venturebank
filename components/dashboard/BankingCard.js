@@ -32,7 +32,7 @@ Number.isFinite(Number(balance))
 
 const displayBalance =
 numericBalance === null
-? "—"
+? "Unavailable"
 : new Intl.NumberFormat("en-US", {
 style: "currency",
 currency: "USD",
@@ -86,7 +86,7 @@ className={cn(
             VentureBank
           </p>
 
-          <p className="mt-0.5 truncate text-[11px] font-medium text-blue-100/80">
+          <p className="mt-0.5 truncate text-[11px] font-semibold text-blue-100/80">
             {accountLabel}
           </p>
         </div>
@@ -113,7 +113,7 @@ className={cn(
         </p>
 
         <p
-          className="mt-1 break-words text-[27px] font-extrabold leading-none tracking-tight sm:text-3xl"
+          className="mt-1 break-words text-[27px] font-extrabold leading-tight tracking-tight sm:text-3xl"
           aria-live="polite"
         >
           {hidden ? "••••••••" : displayBalance}
@@ -133,7 +133,7 @@ className={cn(
         </div>
 
         <div className="shrink-0 text-right">
-          <p className="text-[9px] font-medium text-blue-200/80">
+          <p className="text-[9px] font-semibold text-blue-200/80">
             Valid thru
           </p>
 
